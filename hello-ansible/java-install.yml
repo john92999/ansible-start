@@ -1,0 +1,9 @@
+- name: Install Java
+  become: yes
+  hosts: all
+  tasks:
+    - name: install java
+      ansible.builtin.dnf:
+        name: java-11-openjdk-devel
+        state: present
+        update_cache: yes
