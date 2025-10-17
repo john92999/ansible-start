@@ -2,24 +2,32 @@
   become: yes
   hosts: appserver
   vars:
-    - username: tomcat
-    - home_dir: /opt/tomcat
-    - default_shell: /bin/false
+    username: tomcat
+    home_dir: /opt/tomcat
+    default_shell: /bin/false
+    java_package: openjdk-11-jdk
   tasks:
     - name: update apt repo and cache
       apt:
         update_cache: yes
       when: ansible_facts['os_family'] == "Debian"
+
     - name: install open-jdk-11
       package:
-        name: "{{java_package}}"
+        name: "{{ java_package }}"
         state: present
-    - name: create a tomcat username
+
+    - name: create tomcat group
+      ansible.builtin.group:
+        name: "{{ username }}"
+        state: present
+
+    - name: create a tomcat user
       ansible.builtin.user:
         create_home: yes
-        group: "{{username}}"
-        home: "{{home_dir}}"
-        name: "{{username}}"
-        shell: "{{default_shell}}"
+        group: "{{ username }}"
+        home: "{{ home_dir }}"
+        name: "{{ username }}"
+        shell: "{{ default_shell }}"
         state: present
-      when: ansible_facts['os.family'] == "Debian"
+      when: ansible_facts['os_family'] == "Debian"
