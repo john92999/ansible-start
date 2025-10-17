@@ -2,8 +2,10 @@
   become: yes
   hosts: all
   tasks:
-    - name: install java
-      ansible.builtin.dnf:
-        name: java-11-openjdk-devel
+    - name: Install Java in a cross-platform way
+      ansible.builtin.package:
+        name: "{{ java_package }}"
         state: present
-        update_cache: yes
+  vars:
+    java_package: "{{ 'java-11-openjdk-devel' if ansible_distribution in ['CentOS','RedHat','Rocky'] else 'openjdk-11-jdk' }}"
+
